@@ -29,22 +29,21 @@ sub iterate {
 		$timeout{ai_homunFeed}{timeout} = 60 if (!$timeout{ai_homunFeed}{timeout}); #Timeout value : Default 60sec
 
 		if (timeOut($timeout{ai_homunFeed})
-			&& $slave->{hunger} <= $config{homunculus_hunger}
 			&& $config{homunculus_autoFeed}
+			&& $slave->{hunger} <= $config{homunculus_hunger}
+			&& $slave->{hunger} > $config{homunculus_return}
 			&& (existsInList($config{homunculus_autoFeedAllowedMaps}, $field->baseName) || !$config{homunculus_autoFeedAllowedMaps})) {
-			$timeout{ai_homunFeed}{time} = time;
 			message TF("Auto-feeding %s (%d hunger).\n", $slave, $slave->{hunger}), 'slave';
 			$messageSender->sendHomunculusCommand(1);
-
 		} elsif (timeOut($timeout{ai_homunFeed}) && $slave->{hunger} <= $config{homunculus_return}) {
 			message TF("Homunculus hunger reaches the return value.\n", 'slave');
 			my $skill = new Skill(handle => 'AM_REST');
 			AI::ai_skillUse2($skill, $char->{skills}{AM_REST}{lv}, 1, 0, $char, "AM_REST");
-			$timeout{ai_homunFeed}{time} = time; #timeout trick
-
 		} else {
 			$slave->SUPER::iterate;
 		}
+
+		$timeout{ai_homunFeed}{time} = time;
 	}
 }
 
