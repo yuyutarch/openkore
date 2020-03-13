@@ -18,11 +18,26 @@
 package Network::Send::kRO::RagexeRE_2010_06_29a;
 
 use strict;
-use base qw(Network::Send::kRO::RagexeRE_2010_06_22a);
+use base qw(Network::Send::kRO::Sakexe_0);
 
 sub new {
 	my ($class) = @_;
-	return $class->SUPER::new(@_);
+	my $self = $class->SUPER::new(@_);
+	
+	my %packets = (
+		'098F' => ['char_delete2_accept', 'v a4 a*', [qw(length charID code)]],
+		'007E' => ['sync', 'V', [qw(time)]],
+	);
+
+	$self->{packet_list}{$_} = $packets{$_} for keys %packets;
+
+	my %handlers = qw(
+		sync 007E
+	);
+
+	$self->{packet_lut}{$_} = $handlers{$_} for keys %handlers;
+
+	return $self;
 }
 =pod
 //2010-06-29aRagexeRE

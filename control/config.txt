@@ -3,8 +3,8 @@
 
 ######## Login options and server-specific options ########
 
-master
-server
+master kokoRO
+server 0
 username
 password
 loginPinCode
